@@ -1,11 +1,14 @@
 # from flask import Flask, render_template, redirect, url_for, request
 from flask import Flask, render_template, redirect, url_for, request, session
 from datetime import datetime
+import re
+from zoneinfo import ZoneInfo
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
 app = Flask(__name__)
 app.secret_key = "secretkey" 
+app.config.setdefault("APP_TIMEZONE", "UTC")
 
 users = []
 
@@ -15,13 +18,27 @@ week_days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',
 months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
           'September', 'October', 'November', 'December']
 
-year = int(datetime.now().year)
-month = int(datetime.now().month)
-day = int(datetime.now().day)
-weekday = datetime.now().weekday()
-week_day = week_days[weekday]
-month_name = months[month-1]
-curr_day = f'{day} {month_name} {year}, {week_day}'
+def application_now():
+    return datetime.now(ZoneInfo(app.config["APP_TIMEZONE"]))
+
+
+def dashboard_context(errors=None, submitted_values=None):
+    now = application_now()
+    today = now.date()
+
+    for item in items:
+        due_date = item['due_date']
+        item['overdue'] = datetime(
+            due_date['year'], due_date['month'], due_date['day']
+        ).date() < today
+
+    return {
+        'errors': errors or {},
+        'leng': len(items),
+        'list_items': items,
+        'submitted_values': submitted_values or {},
+        'today': f'{now.day} {months[now.month - 1]} {now.year}, {week_days[now.weekday()]}'
+    }
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -64,42 +81,55 @@ def home():
     if "user" not in session:
         return redirect("/login")
 
-    global year, month, day
     if request.method == 'POST':
-        form_data = request.form
-        new_item_content = form_data['newItem']
-        new_item_duedate = form_data['duedate']
+        new_item_content = request.form.get('newItem', '')
+        new_item_duedate = request.form.get('duedate', '')
+        errors = {}
+        parsed_due_date = None
 
-        date_is = new_item_duedate.split("-")
-        due_year = int(date_is[0])
-        due_month = int(date_is[1])
-        due_day = int(date_is[2])
+        if not new_item_content.strip():
+            errors['newItem'] = 'Enter a task name.'
 
-        print(date_is)
+        if not new_item_duedate:
+            errors['duedate'] = 'Enter a due date.'
+        elif not re.fullmatch(r'\d{4}-\d{2}-\d{2}', new_item_duedate):
+            errors['duedate'] = 'Enter a valid calendar date.'
+        else:
+            try:
+                parsed_due_date = datetime.strptime(new_item_duedate, '%Y-%m-%d').date()
+            except ValueError:
+                errors['duedate'] = 'Enter a valid calendar date.'
+            else:
+                if parsed_due_date <= application_now().date():
+                    errors['duedate'] = 'Choose a due date later than today.'
+
+        if errors:
+            return render_template(
+                'index.html',
+                **dashboard_context(
+                    errors=errors,
+                    submitted_values={
+                        'newItem': new_item_content,
+                        'duedate': new_item_duedate
+                    }
+                )
+            )
+
         new_item_id = len(items) + 1
         new_item = {
             'id': int(new_item_id),
             'content': new_item_content,
             'due_date': {
-                'year': due_year,
-                'month': due_month,
-                'day': due_day
+                'year': parsed_due_date.year,
+                'month': parsed_due_date.month,
+                'day': parsed_due_date.day
             }
         }
 
         items.append(new_item)
 
-        for item in items:
-            date = item['due_date']
-            if date['year'] == year:
-                if date['month'] == month:
-                    if date['day'] < day:
-                        item['overdue'] = True
-                    else:
-                        item['overdue'] = False
-
         return redirect(url_for('home'))
-    return render_template('index.html', list_items=items, today=curr_day, leng=len(items))
+    return render_template('index.html', **dashboard_context())
 
 
 @app.route('/delete-item', methods=['POST'])

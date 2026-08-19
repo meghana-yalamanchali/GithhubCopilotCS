@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To-do List</title>
     <link rel="stylesheet" href="../static/style.css">
+    <script src="{{ url_for('static', filename='task-form-validation.js') }}" defer></script>
 </head>
 <body>
     <div class="box" id="heading">
@@ -33,12 +34,33 @@
                 </form>
             {% endfor %}
         {% endif %}
-
-
-
-        <form class="item " action="/" method="POST">
-            <input type="text" name="newItem" autocomplete="off" placeholder="Add a New Task Here" required>
-            <input type="date" name="duedate" required>
+        <form class="item task-form" id="add-task-form" action="/" method="POST">
+            <div class="task-form-field">
+                <label for="new-item">Task name</label>
+                <input
+                    type="text"
+                    id="new-item"
+                    name="newItem"
+                    autocomplete="off"
+                    placeholder="Add a New Task Here"
+                    value="{{ submitted_values.get('newItem', '') }}"
+                    required
+                    {% if errors.get('newItem') %}aria-invalid="true" aria-describedby="new-item-error"{% endif %}
+                >
+                <div class="field-error" id="new-item-error" role="alert">{{ errors.get('newItem', '') }}</div>
+            </div>
+            <div class="task-form-field">
+                <label for="due-date">Due date</label>
+                <input
+                    type="date"
+                    id="due-date"
+                    name="duedate"
+                    value="{{ submitted_values.get('duedate', '') }}"
+                    required
+                    {% if errors.get('duedate') %}aria-invalid="true" aria-describedby="due-date-error"{% endif %}
+                >
+                <div class="field-error" id="due-date-error" role="alert">{{ errors.get('duedate', '') }}</div>
+            </div>
             <button type="submit" name="submit">+</button>
         </form>
     </div>

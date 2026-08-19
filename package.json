@@ -1,0 +1,10 @@
+{
+  "name": "flask-todo-list",
+  "private": true,
+  "scripts": {
+    "test:browser": "playwright test tests/browser/task-form.spec.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0"
+  }
+}
