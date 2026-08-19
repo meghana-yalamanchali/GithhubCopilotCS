@@ -141,6 +141,67 @@
     border-radius: 5px;
     box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.301);
   }
+
+  .task-form {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .task-form-field {
+    display: flex;
+    flex: 1 1 220px;
+    flex-direction: column;
+    min-width: 0;
+    text-align: left;
+  }
+
+  .task-form label {
+    color: #353434;
+    font-weight: bold;
+    margin: 0 5px;
+  }
+
+  .task-form input[type="text"],
+  .task-form input[type="date"] {
+    width: calc(100% - 10px);
+  }
+
+  .task-form input[type="text"]:focus,
+  .task-form input[type="date"]:focus {
+    outline: 3px solid #1d5f83;
+    outline-offset: 2px;
+    border-radius: 5px;
+  }
+
+  .task-form .input-invalid {
+    border: 2px solid #b42318;
+    border-bottom: 4px solid #b42318;
+  }
+
+  .field-error {
+    color: #9b1c1c;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', sans-serif;
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin: 0 5px;
+    min-height: 1.4em;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 500px) {
+    .task-form {
+      display: flex;
+    }
+
+    .task-form-field {
+      flex-basis: 100%;
+    }
+
+    .task-form button {
+      margin: 0 5px;
+    }
+  }
   
   .logout {
       position: fixed;
