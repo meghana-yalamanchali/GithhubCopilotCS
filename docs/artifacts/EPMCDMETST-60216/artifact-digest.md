@@ -11,12 +11,12 @@
 | Artifact | Status | Summary |
 | --- | --- | --- |
 | [problem_spec.md](problem_spec.md) | Approved | Defines accessible, progressive client-side validation with authoritative server validation and a preserved no-JavaScript path. |
-| [design_spec.md](design_spec.md) | Amended, pending re-review | Defines the JavaScript event model, strict server date validation, configurable application clock, and executable test tooling. |
-| [design_review.md](design_review.md) | Superseded pending re-review | Its blocking findings are addressed in design specification version 1.1 and require reviewer confirmation. |
+| [design_spec.md](design_spec.md) | Amended, follow-up reviewed | Defines the JavaScript event model, strict server date validation, configurable application clock, and executable test tooling. |
+| [design_review.md](design_review.md) | Follow-up review passed | Confirms that version 1.1 addresses the former blocking findings; non-blocking operational risks remain tracked. |
 
 ## Review Conditions
 
-The amended design resolves the following conditions; a reviewer must verify the changes before implementation:
+The amended design resolves the following implementation conditions, verified by the follow-up review:
 
 1. JavaScript sets `form.noValidate` only after attaching the form controller, retaining native constraints without JavaScript.
 2. The server accepts only exact `YYYY-MM-DD` values and evaluates dates in configurable `APP_TIMEZONE`, defaulting to `UTC`.
@@ -25,7 +25,7 @@ The amended design resolves the following conditions; a reviewer must verify the
 
 ## Planning Readiness
 
-The required source artifacts are present. The amended design requires a re-review before implementation planning can be approved.
+The required source artifacts are present, the follow-up design review passed, and the implementation plan is approved.
 
 ## Implementation Plan
 
