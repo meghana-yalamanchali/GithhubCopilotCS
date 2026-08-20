@@ -1,47 +1,1105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-do List</title>
-    <link rel="stylesheet" href="../static/style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Todo Dashboard</title>
+<style>
+
+    :root {
+
+      --bg: #f4f6fb;
+
+      --surface: #ffffff;
+
+      --surface-2: #f9fafc;
+
+      --text: #222222;
+
+      --muted: #666b77;
+
+      --brand: #343434;
+
+      --brand-2: #4d4d4d;
+
+      --line: #e5e8ef;
+
+      --success: #166534;
+
+      --success-bg: #ecfdf3;
+
+      --danger: #b42318;
+
+      --danger-bg: #fff4f4;
+
+      --shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+
+      --radius: 16px;
+
+      --focus: 0 0 0 4px rgba(80, 86, 255, 0.16);
+
+    }
+ 
+    * {
+
+      box-sizing: border-box;
+
+    }
+ 
+    body {
+
+      margin: 0;
+
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+      background:
+
+        radial-gradient(circle at top left, #eef2ff 0%, transparent 28%),
+
+        radial-gradient(circle at top right, #fce7f3 0%, transparent 22%),
+
+        var(--bg);
+
+      color: var(--text);
+
+      min-height: 100vh;
+
+    }
+ 
+    .page {
+
+      max-width: 1040px;
+
+      margin: 0 auto;
+
+      padding: 28px 16px 48px;
+
+    }
+ 
+    .topbar {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+
+      gap: 16px;
+
+      padding: 18px 22px;
+
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+
+      color: #fff;
+
+      border-radius: var(--radius);
+
+      box-shadow: var(--shadow);
+
+      margin-bottom: 20px;
+
+    }
+ 
+    .brand-block {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 14px;
+
+      min-width: 0;
+
+    }
+ 
+    .brand-mark {
+
+      width: 48px;
+
+      height: 48px;
+
+      border-radius: 14px;
+
+      background: rgba(255, 255, 255, 0.14);
+
+      display: grid;
+
+      place-items: center;
+
+      font-size: 22px;
+
+      flex: 0 0 auto;
+
+    }
+ 
+    .brand-text {
+
+      min-width: 0;
+
+    }
+ 
+    .brand-text h1 {
+
+      margin: 0;
+
+      font-size: 1.25rem;
+
+      line-height: 1.2;
+
+      font-weight: 700;
+
+    }
+ 
+    .brand-text p {
+
+      margin: 4px 0 0;
+
+      color: rgba(255, 255, 255, 0.86);
+
+      font-size: 0.95rem;
+
+    }
+ 
+    .logout-link {
+
+      display: inline-flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      gap: 8px;
+
+      padding: 10px 16px;
+
+      border-radius: 999px;
+
+      text-decoration: none;
+
+      color: #fff;
+
+      background: rgba(255, 255, 255, 0.12);
+
+      border: 1px solid rgba(255, 255, 255, 0.18);
+
+      transition: 0.2s ease;
+
+      white-space: nowrap;
+
+      font-weight: 600;
+
+    }
+ 
+    .logout-link:hover,
+
+    .logout-link:focus-visible {
+
+      background: rgba(255, 255, 255, 0.2);
+
+      outline: none;
+
+      box-shadow: var(--focus);
+
+    }
+ 
+    .layout {
+
+      display: grid;
+
+      grid-template-columns: 1.25fr 0.85fr;
+
+      gap: 20px;
+
+    }
+ 
+    .card {
+
+      background: var(--surface);
+
+      border: 1px solid var(--line);
+
+      border-radius: var(--radius);
+
+      box-shadow: var(--shadow);
+
+      overflow: hidden;
+
+    }
+ 
+    .card-header {
+
+      padding: 20px 22px;
+
+      border-bottom: 1px solid var(--line);
+
+      background: linear-gradient(180deg, #ffffff 0%, #fafbff 100%);
+
+    }
+ 
+    .card-header h2 {
+
+      margin: 0;
+
+      font-size: 1.15rem;
+
+    }
+ 
+    .card-header p {
+
+      margin: 8px 0 0;
+
+      color: var(--muted);
+
+      line-height: 1.5;
+
+      font-size: 0.95rem;
+
+    }
+ 
+    .dashboard-list {
+
+      padding: 0;
+
+    }
+ 
+    .task-item {
+
+      display: grid;
+
+      grid-template-columns: 28px 1fr auto;
+
+      gap: 14px;
+
+      align-items: start;
+
+      padding: 18px 22px;
+
+      border-bottom: 1px solid var(--line);
+
+    }
+ 
+    .task-item:last-child {
+
+      border-bottom: 0;
+
+    }
+ 
+    .task-checkbox {
+
+      width: 22px;
+
+      height: 22px;
+
+      margin-top: 2px;
+
+      accent-color: var(--brand);
+
+      cursor: pointer;
+
+    }
+ 
+    .task-main {
+
+      min-width: 0;
+
+    }
+ 
+    .task-title {
+
+      margin: 0;
+
+      font-size: 1rem;
+
+      font-weight: 700;
+
+      color: var(--text);
+
+    }
+ 
+    .task-meta {
+
+      margin: 7px 0 0;
+
+      font-size: 0.92rem;
+
+      color: var(--muted);
+
+      line-height: 1.45;
+
+    }
+ 
+    .task-status {
+
+      display: inline-flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+      font-size: 0.88rem;
+
+      font-weight: 700;
+
+      border-radius: 999px;
+
+      padding: 8px 12px;
+
+      white-space: nowrap;
+
+      margin-top: 2px;
+
+    }
+ 
+    .task-status.due {
+
+      background: var(--success-bg);
+
+      color: var(--success);
+
+    }
+ 
+    .task-status.overdue {
+
+      background: var(--danger-bg);
+
+      color: var(--danger);
+
+    }
+ 
+    .task-status .icon {
+
+      font-size: 1rem;
+
+      line-height: 1;
+
+    }
+ 
+    .task-completed .task-title {
+
+      text-decoration: line-through;
+
+      color: #7a7f89;
+
+    }
+ 
+    .task-completed .task-meta {
+
+      color: #8b909a;
+
+    }
+ 
+    .empty-state {
+
+      padding: 40px 22px;
+
+      text-align: center;
+
+    }
+ 
+    .empty-state .empty-icon {
+
+      width: 64px;
+
+      height: 64px;
+
+      border-radius: 20px;
+
+      margin: 0 auto 14px;
+
+      display: grid;
+
+      place-items: center;
+
+      background: #f1f5f9;
+
+      color: #334155;
+
+      font-size: 28px;
+
+    }
+ 
+    .empty-state h3 {
+
+      margin: 0;
+
+      font-size: 1.1rem;
+
+    }
+ 
+    .empty-state p {
+
+      margin: 8px 0 0;
+
+      color: var(--muted);
+
+      line-height: 1.5;
+
+    }
+ 
+    .form-wrap {
+
+      padding: 18px 22px 22px;
+
+    }
+ 
+    .form-errors {
+
+      margin: 0 0 14px;
+
+      border-radius: 12px;
+
+      background: var(--danger-bg);
+
+      color: var(--danger);
+
+      border: 1px solid #f3b4b0;
+
+      padding: 12px 14px;
+
+      font-weight: 700;
+
+      font-size: 0.95rem;
+
+      line-height: 1.4;
+
+    }
+ 
+    .form-errors:empty {
+
+      display: none;
+
+    }
+ 
+    .field-grid {
+
+      display: grid;
+
+      grid-template-columns: 1.4fr 0.9fr auto;
+
+      gap: 12px;
+
+      align-items: start;
+
+    }
+ 
+    .field {
+
+      display: flex;
+
+      flex-direction: column;
+
+      min-width: 0;
+
+    }
+ 
+    .field label {
+
+      font-weight: 700;
+
+      font-size: 0.92rem;
+
+      margin-bottom: 8px;
+
+      color: #30343b;
+
+    }
+ 
+    .field input {
+
+      width: 100%;
+
+      height: 50px;
+
+      border: 1px solid #cfd5df;
+
+      border-radius: 12px;
+
+      padding: 0 14px;
+
+      font: inherit;
+
+      background: #fff;
+
+      color: var(--text);
+
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+
+    }
+ 
+    .field input::placeholder {
+
+      color: #949aa6;
+
+    }
+ 
+    .field input:focus {
+
+      outline: none;
+
+      border-color: #6d78ff;
+
+      box-shadow: var(--focus);
+
+    }
+ 
+    .field input[aria-invalid="true"] {
+
+      border-color: #b42318;
+
+      box-shadow: 0 0 0 4px rgba(180, 35, 24, 0.12);
+
+    }
+ 
+    .field-error {
+
+      margin: 8px 0 0;
+
+      padding: 0;
+
+      color: var(--danger);
+
+      font-size: 0.9rem;
+
+      font-weight: 700;
+
+      line-height: 1.35;
+
+    }
+ 
+    .field-error[hidden] {
+
+      display: none !important;
+
+    }
+ 
+    .field-error .icon {
+
+      margin-right: 6px;
+
+    }
+ 
+    .add-button {
+
+      height: 50px;
+
+      min-width: 120px;
+
+      border: 0;
+
+      border-radius: 12px;
+
+      padding: 0 18px;
+
+      background: linear-gradient(135deg, #2f2f2f 0%, #565656 100%);
+
+      color: #fff;
+
+      font: inherit;
+
+      font-weight: 700;
+
+      cursor: pointer;
+
+      transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+
+    }
+ 
+    .add-button:hover {
+
+      transform: translateY(-1px);
+
+      opacity: 0.96;
+
+    }
+ 
+    .add-button:focus-visible {
+
+      outline: none;
+
+      box-shadow: var(--focus), 0 10px 20px rgba(0, 0, 0, 0.12);
+
+    }
+ 
+    .helper-panel {
+
+      display: grid;
+
+      gap: 14px;
+
+    }
+ 
+    .info-box {
+
+      padding: 18px 20px;
+
+      border-radius: var(--radius);
+
+      background: var(--surface);
+
+      border: 1px solid var(--line);
+
+      box-shadow: var(--shadow);
+
+    }
+ 
+    .info-box h3 {
+
+      margin: 0 0 8px;
+
+      font-size: 1rem;
+
+    }
+ 
+    .info-box p {
+
+      margin: 0;
+
+      color: var(--muted);
+
+      line-height: 1.55;
+
+      font-size: 0.95rem;
+
+    }
+ 
+    .badge-row {
+
+      display: flex;
+
+      flex-wrap: wrap;
+
+      gap: 10px;
+
+      margin-top: 12px;
+
+    }
+ 
+    .badge {
+
+      display: inline-flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+      border-radius: 999px;
+
+      padding: 8px 12px;
+
+      font-weight: 700;
+
+      font-size: 0.88rem;
+
+      background: #f1f5f9;
+
+      color: #334155;
+
+    }
+ 
+    .badge.due {
+
+      background: var(--success-bg);
+
+      color: var(--success);
+
+    }
+ 
+    .badge.overdue {
+
+      background: var(--danger-bg);
+
+      color: var(--danger);
+
+    }
+ 
+    .screen-reader-only {
+
+      position: absolute;
+
+      width: 1px;
+
+      height: 1px;
+
+      padding: 0;
+
+      margin: -1px;
+
+      overflow: hidden;
+
+      clip: rect(0, 0, 0, 0);
+
+      white-space: nowrap;
+
+      border: 0;
+
+    }
+ 
+    @media (max-width: 920px) {
+
+      .layout {
+
+        grid-template-columns: 1fr;
+
+      }
+
+    }
+ 
+    @media (max-width: 720px) {
+
+      .topbar {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+      }
+ 
+      .logout-link {
+
+        width: 100%;
+
+      }
+ 
+      .field-grid {
+
+        grid-template-columns: 1fr;
+
+      }
+ 
+      .add-button {
+
+        width: 100%;
+
+      }
+ 
+      .task-item {
+
+        grid-template-columns: 28px 1fr;
+
+      }
+ 
+      .task-status {
+
+        grid-column: 2;
+
+        width: fit-content;
+
+        margin-top: 6px;
+
+      }
+
+    }
+</style>
 </head>
 <body>
-    <div class="box" id="heading">
-        <h1 style = "color: #ffffff">{{ today }}</h1>
-    </div>   
+<div class="page">
+<header class="topbar" aria-label="Todo dashboard header">
+<div class="brand-block">
+<div class="brand-mark" aria-hidden="true">✓</div>
+<div class="brand-text">
+<h1>Todo Dashboard</h1>
+<p>Organize tasks, track deadlines, and stay on top of your day.</p>
+</div>
+</div>
+<a class="logout-link" href="#" aria-label="Log out of the application">Log out</a>
+</header>
+ 
+    <div class="layout">
+<section class="card" aria-labelledby="task-list-title">
+<div class="card-header">
+<h2 id="task-list-title">Today’s Tasks</h2>
+<p>View your saved tasks below. Check a task when you want to remove it.</p>
+</div>
+ 
+        <div class="dashboard-list" aria-label="Task list">
+<form class="task-item-form" action="#" method="post">
+<div class="task-item">
+<input class="task-checkbox" type="checkbox" aria-label="Delete task Pay electricity bill" />
+<div class="task-main">
+<p class="task-title">Pay electricity bill</p>
+<p class="task-meta">Due date: 15 August 2026</p>
+</div>
+<div class="task-status overdue" aria-label="Status: Overdue">
+<span class="icon" aria-hidden="true">⚠</span>
 
-    <div class="box">
+                Overdue
+</div>
+</div>
+</form>
+ 
+          <form class="task-item-form" action="#" method="post">
+<div class="task-item">
+<input class="task-checkbox" type="checkbox" aria-label="Delete task Prepare weekly report" />
+<div class="task-main">
+<p class="task-title">Prepare weekly report</p>
+<p class="task-meta">Due date: 16 August 2026</p>
+</div>
+<div class="task-status due" aria-label="Status: Due">
+<span class="icon" aria-hidden="true">✓</span>
 
-        {% if leng == 0: %}
-            <p style="text-align: center;">No Task Added Yet</p>
+                Due
+</div>
+</div>
+</form>
+ 
+          <form class="task-item-form" action="#" method="post">
+<div class="task-item">
+<input class="task-checkbox" type="checkbox" aria-label="Delete task Grocery shopping" />
+<div class="task-main">
+<p class="task-title">Grocery shopping</p>
+<p class="task-meta">Due date: 18 August 2026</p>
+</div>
+<div class="task-status due" aria-label="Status: Due">
+<span class="icon" aria-hidden="true">✓</span>
 
-        {% else: %}
-            {% for item in list_items  %}
-                <form action="/delete-item" method="POST">
-                    <div class="item" >
-                        <input type="checkbox"  name="checkbox" value="{{item['id']}}" onchange="this.form.submit()">
-                        <p class="task_name"> {{ item.content }} </p>
-                        <p class="duedate {{ 'overdue' if item.overdue==True else 'notdue' }}">
-                            {{ item.due_date['day']}} / {{item.due_date['month']}} / {{item.due_date['year']}}
-                            <br>
-                            Status: {{ 'Overdue' if item.overdue==True else 'Due' }}
-                        </p>
-                    </div>
-                    <hr>
-                </form>
-            {% endfor %}
-        {% endif %}
+                Due
+</div>
+</div>
+</form>
+</div>
+ 
+        <div class="empty-state" hidden>
+<div class="empty-icon" aria-hidden="true">🗂️</div>
+<h3>No Task Added Yet</h3>
+<p>Use the form below to create your first todo and keep track of its due date.</p>
+</div>
+</section>
+ 
+      <aside class="helper-panel" aria-label="Task details and add form">
+<section class="info-box" aria-labelledby="add-task-title">
+<h3 id="add-task-title">Add Todo</h3>
+<p>Enter a task name and choose a due date. Both fields are required before submission.</p>
+ 
+          <form id="todo-form" action="#" method="post" novalidate>
+<p id="form-errors" class="form-errors" role="status" aria-live="polite" aria-atomic="true"></p>
+ 
+            <div class="field-grid">
+<div class="field">
+<label for="newItem">Task name</label>
+<input
 
+                  id="newItem"
 
+                  name="newItem"
 
-        <form class="item " action="/" method="POST">
-            <input type="text" name="newItem" autocomplete="off" placeholder="Add a New Task Here" required>
-            <input type="date" name="duedate" required>
-            <button type="submit" name="submit">+</button>
-        </form>
-    </div>
-<a class="logout" href="{{ url_for('logout') }}">ログアウト</a>
+                  type="text"
+
+                  placeholder="Add a new task here"
+
+                  autocomplete="off"
+
+                  required
+
+                  aria-required="true"
+
+                  aria-describedby="newItem-error form-errors"
+
+                />
+<p id="newItem-error" class="field-error" hidden>
+<span class="icon" aria-hidden="true">⚠</span>
+<span class="error-text">Task name is required.</span>
+</p>
+</div>
+ 
+              <div class="field">
+<label for="duedate">Due date</label>
+<input
+
+                  id="duedate"
+
+                  name="duedate"
+
+                  type="date"
+
+                  required
+
+                  aria-required="true"
+
+                  aria-describedby="duedate-error form-errors"
+
+                />
+<p id="duedate-error" class="field-error" hidden>
+<span class="icon" aria-hidden="true">⚠</span>
+<span class="error-text">Due date is required.</span>
+</p>
+</div>
+ 
+              <button type="submit" class="add-button">Add Todo</button>
+</div>
+</form>
+</section>
+ 
+        <section class="info-box" aria-labelledby="status-guide-title">
+<h3 id="status-guide-title">Status Guide</h3>
+<p>Overdue tasks are shown in red with a warning icon. Tasks that are still due are shown in green with a check icon.</p>
+<div class="badge-row" aria-hidden="true">
+<span class="badge overdue">⚠ Overdue</span>
+<span class="badge due">✓ Due</span>
+</div>
+</section>
+</aside>
+</div>
+</div>
+ 
+  <script>
+
+    (function () {
+
+      const form = document.getElementById("todo-form");
+
+      const summary = document.getElementById("form-errors");
+ 
+      const fields = [
+
+        {
+
+          input: document.getElementById("newItem"),
+
+          error: document.getElementById("newItem-error"),
+
+          message: "Task name is required.",
+
+          valid: (value) => value.trim().length > 0
+
+        },
+
+        {
+
+          input: document.getElementById("duedate"),
+
+          error: document.getElementById("duedate-error"),
+
+          message: "Due date is required.",
+
+          valid: (value) => value.trim().length > 0
+
+        }
+
+      ];
+ 
+      function setError(field) {
+
+        field.input.setAttribute("aria-invalid", "true");
+
+        field.error.hidden = false;
+
+        field.error.querySelector(".error-text").textContent = field.message;
+
+      }
+ 
+      function clearError(field) {
+
+        field.input.removeAttribute("aria-invalid");
+
+        field.error.hidden = true;
+
+      }
+ 
+      function validateField(field) {
+
+        if (!field.valid(field.input.value)) {
+
+          setError(field);
+
+          return false;
+
+        }
+
+        clearError(field);
+
+        return true;
+
+      }
+ 
+      function validateForm() {
+
+        let invalidCount = 0;
+
+        let firstInvalid = null;
+ 
+        fields.forEach((field) => {
+
+          const isValid = validateField(field);
+
+          if (!isValid) {
+
+            invalidCount += 1;
+
+            if (!firstInvalid) {
+
+              firstInvalid = field.input;
+
+            }
+
+          }
+
+        });
+ 
+        if (invalidCount > 0) {
+
+          summary.textContent = invalidCount === 1
+
+            ? "Please fix the highlighted field before submitting."
+
+            : "Please fix the highlighted fields before submitting.";
+
+          firstInvalid.focus();
+
+          return false;
+
+        }
+ 
+        summary.textContent = "";
+
+        return true;
+
+      }
+ 
+      form.addEventListener("submit", function (event) {
+
+        if (!validateForm()) {
+
+          event.preventDefault();
+
+        }
+
+      });
+ 
+      fields.forEach((field) => {
+
+        field.input.addEventListener("input", function () {
+
+          if (field.valid(field.input.value)) {
+
+            clearError(field);
+
+          }
+
+          const remaining = fields.filter((item) => !item.valid(item.input.value)).length;
+
+          summary.textContent = remaining > 0
+
+            ? (remaining === 1
+
+                ? "Please fix the highlighted field before submitting."
+
+                : "Please fix the highlighted fields before submitting.")
+
+            : "";
+
+        });
+ 
+        field.input.addEventListener("blur", function () {
+
+          validateField(field);
+
+        });
+
+      });
+
+    })();
+</script>
 </body>
 </html>
